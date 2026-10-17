@@ -1,0 +1,73 @@
+---
+import Site from "../layouts/Site.astro";
+import { runtimeSite } from "../data/site";
+
+// Rendered on request so text published from the Studio shows up right away.
+export const prerender = false;
+
+const { site, highlights } = await runtimeSite(Astro.locals);
+
+// Hand-coded sections. Edit freely, or ask the Studio's AI dock to change them.
+const cards = [
+	{ title: "About", href: "/about", detail: "Who we are and what we do." },
+	{ title: "Welcome", href: "/p/welcome", detail: "A sample page made with the drag-and-drop Page Builder." },
+	{ title: "Get in touch", href: site.email ? `mailto:${site.email}` : "/about", detail: "Questions? We'd love to hear from you." },
+];
+---
+
+<Site title={site.name} description={site.tagline || site.name}>
+	<section class="opener">
+		<div class="shell">
+			<p class="opener__id">{site.name}</p>
+			<h1 class="opener__when">{site.tagline}</h1>
+			{site.location && <p class="opener__where">{site.location}</p>}
+			<div class="opener__actions">
+				<a class="btn btn--gold" href="/about">Learn more</a>
+				<a class="btn btn--quiet" href="/p/welcome">See a sample page</a>
+			</div>
+		</div>
+	</section>
+
+	{highlights.length > 0 && (
+		<section class="band">
+			<div class="shell">
+				<p class="band__label">Highlights</p>
+				<h2 class="band__title">What to know first.</h2>
+				<ul class="qa">
+					{highlights.map((item) => (
+						<li class="qa__item">
+							<p class="qa__q">{item.n}</p>
+							<p class="qa__a">{item.verb}</p>
+						</li>
+					))}
+				</ul>
+			</div>
+		</section>
+	)}
+
+	<section class="band band--raised start-here">
+		<div class="shell">
+			<p class="band__label">A place to begin</p>
+			<h2 class="band__title">Take your next step.</h2>
+			<div class="start-here__cards">
+				{cards.map((card) => (
+					<a href={card.href}>
+						<strong>{card.title}</strong>
+						<span>{card.detail}</span>
+					</a>
+				))}
+			</div>
+		</div>
+	</section>
+</Site>
+
+<style>
+	.start-here__cards { display: grid; gap: .8rem; }
+	.start-here__cards a { display: grid; gap: .35rem; padding: 1.3rem; color: inherit; text-decoration: none; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--ink) 74%, transparent); transition: transform .18s ease, border-color .18s ease; }
+	.start-here__cards a:hover { transform: translateY(-.2rem); border-color: var(--gold); }
+	.start-here__cards strong { font-family: var(--display); font-size: 1.45rem; letter-spacing: -.02em; }
+	.start-here__cards span { color: var(--muted); line-height: 1.45; }
+	@media (min-width: 760px) {
+		.start-here__cards { grid-template-columns: repeat(3, 1fr); }
+	}
+</style>

@@ -1,0 +1,18 @@
+---
+// Builder pages at /p/<slug>. Pages mounted at a real site route redirect
+// there so each page has exactly one address.
+export const prerender = false;
+
+import MountedPage from "../../components/builder/MountedPage.astro";
+import { isAuthed } from "../../lib/studio/auth";
+import { draftGuard, MOUNTED } from "../../lib/studio/pages";
+
+const { slug } = Astro.params;
+if (slug && MOUNTED[slug]) {
+	return Astro.redirect(MOUNTED[slug]);
+}
+const notFound = await draftGuard(slug!, isAuthed(Astro.cookies), Astro.locals);
+if (notFound) return notFound;
+---
+
+<MountedPage slug={slug!} />

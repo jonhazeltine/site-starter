@@ -1,0 +1,40 @@
+---
+// The visual page builder (staff-only). A full-screen app: drag brand blocks,
+// talk to the AI, publish to /p/<slug>. Auth rides the same studio cookie.
+export const prerender = false;
+
+import { isAuthed } from "../../lib/studio/auth";
+import BuilderApp from "../../components/builder/BuilderApp";
+// Load the site's stylesheet so Puck's preview canvas (which mirrors this
+// page's styles) renders blocks exactly as they'll look on the site.
+import "../../styles/global.css";
+import "../../styles/tap.css";
+import "../../styles/studio-builder.css";
+
+if (!isAuthed(Astro.cookies)) {
+	return Astro.redirect("/?edit=1");
+}
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex, nofollow" />
+		<script is:inline>
+			(() => {
+				try {
+					const choice = localStorage.getItem("site-theme") || "auto";
+					const system = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+					document.documentElement.dataset.theme = choice === "auto" ? system : choice;
+					document.documentElement.dataset.themeChoice = choice;
+				} catch { document.documentElement.dataset.theme = "dark"; }
+			})();
+		</script>
+		<title>Page Builder · My Site</title>
+	</head>
+	<body class="builder-body">
+		<BuilderApp client:only="react" />
+	</body>
+</html>

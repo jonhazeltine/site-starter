@@ -1,0 +1,241 @@
+/* The Page Builder is a work surface, but it follows the same appearance
+ * selection as the public site and the Studio dock. Keep these tokens local
+ * so public-page palettes are never changed by editor-only controls. */
+.builder-body {
+	--studio-bg: #0d0f14;
+	--studio-panel: #151922;
+	--studio-panel-raised: #1c2130;
+	--studio-text: #eef1f6;
+	--studio-muted: #9aa3b2;
+	--studio-line: #2a3040;
+	--studio-accent: #f2d2a2;
+	--studio-accent-ink: #12100c;
+	--studio-danger: #eec7b7;
+	margin: 0;
+	background: var(--studio-bg);
+	color: var(--studio-text);
+	color-scheme: dark;
+}
+
+:root[data-theme="light"] .builder-body {
+	--studio-bg: #f5f0e8;
+	--studio-panel: #fffdf9;
+	--studio-panel-raised: #f0e9de;
+	--studio-text: #17202b;
+	--studio-muted: #5f6875;
+	--studio-line: rgba(23, 32, 43, .18);
+	--studio-accent: #8a6425;
+	--studio-accent-ink: #fffdf9;
+	--studio-danger: #9a4137;
+	color-scheme: light;
+}
+
+.builder-app { min-height: 100vh; background: var(--studio-bg); color: var(--studio-text); }
+.builder-appearance { position: relative; margin-left: auto; }
+.builder-appearance__trigger { display: inline-flex; align-items: center; gap: .45rem; padding: .45rem .68rem; border: 1px solid var(--studio-line); border-radius: 999px; background: var(--studio-panel); color: var(--studio-text); font: inherit; font-size: 13px; cursor: pointer; }
+.builder-appearance__menu { position: absolute; z-index: 20; right: 0; top: calc(100% + .45rem); min-width: 12.5rem; padding: .35rem; border: 1px solid var(--studio-line); border-radius: 12px; background: var(--studio-panel); box-shadow: 0 18px 44px rgba(0,0,0,.18); }
+.builder-appearance__menu button { display: grid; width: 100%; gap: .1rem; padding: .62rem .7rem; border: 0; border-radius: 8px; background: transparent; color: var(--studio-text); font: inherit; font-size: 13px; text-align: left; cursor: pointer; }
+.builder-appearance__menu button:hover, .builder-appearance__menu button[aria-checked="true"] { background: color-mix(in srgb, var(--studio-accent) 15%, transparent); }
+.builder-appearance__menu span { color: var(--studio-muted); font-size: 11px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.builder-button { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: .55rem .85rem; border: 1px solid var(--studio-line); border-radius: 9px; background: transparent; color: var(--studio-text); font: inherit; font-size: 13px; font-weight: 650; text-decoration: none; cursor: pointer; }
+.builder-button--primary { border-color: transparent; background: linear-gradient(135deg,#ffe7bf,var(--studio-accent)); color: var(--studio-accent-ink); }
+.builder-button--secondary:hover { background: var(--studio-panel-raised); }
+.builder-directory { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.builder-directory__header { display: flex; justify-content: space-between; gap: 2rem; padding: 28px max(24px, calc((100vw - 1180px) / 2)); border-bottom: 1px solid var(--studio-line); background: var(--studio-panel); }
+.builder-directory__header h1 { margin: 2px 0 5px; font-size: clamp(25px, 3vw, 34px); letter-spacing: -.035em; }
+.builder-directory__header p { margin: 0; color: var(--studio-muted); }
+.builder-directory__eyebrow { color: var(--studio-accent)!important; font-size: 12px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+.builder-directory__header-actions { display: flex; align-items: center; gap: 8px; }
+.builder-directory__main { width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 24px 0 48px; }
+.builder-directory__tools { display: flex; align-items: center; gap: 12px; }
+.builder-search { flex: 1; }
+.builder-search input { box-sizing: border-box; width: 100%; min-height: 42px; padding: .7rem .85rem; border: 1px solid var(--studio-line); border-radius: 10px; background: var(--studio-panel); color: var(--studio-text); font: inherit; font-size: 16px; }
+.builder-filters { display: flex; padding: 3px; border: 1px solid var(--studio-line); border-radius: 10px; background: var(--studio-panel); }
+.builder-filters button { padding: .55rem .75rem; border: 0; border-radius: 7px; background: transparent; color: var(--studio-muted); font: inherit; font-size: 13px; cursor: pointer; }
+.builder-filters button[aria-pressed="true"] { background: var(--studio-panel-raised); color: var(--studio-text); }
+.builder-directory__section-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin: 28px 0 12px; }
+.builder-directory__section-heading h2 { margin: 0 0 3px; font-size: 18px; }
+.builder-directory__section-heading p,.builder-directory__section-heading>span { margin: 0; color: var(--studio-muted); font-size: 12px; }
+.builder-page-list { display: grid; border-top: 1px solid var(--studio-line); }
+.builder-page-row { position: relative; display: grid; grid-template-columns: 168px minmax(0, 1fr) auto; gap: 16px; align-items: center; min-width: 0; padding: 12px 4px; border-bottom: 1px solid var(--studio-line); }
+.builder-page-row[draggable="true"] { cursor: grab; }
+.builder-page-row__preview { position: relative; width: 168px; height: 94px; overflow: hidden; border: 1px solid var(--studio-line); border-radius: 8px; background: var(--studio-panel-raised); }
+.builder-page-row__preview img { width: 100%; height: 100%; object-fit: cover; }
+.builder-page-row__preview>span { display: grid; width: 100%; height: 100%; place-items: center; color: var(--studio-accent); font-family: Georgia, serif; font-size: 34px; background: linear-gradient(135deg, var(--studio-panel-raised), color-mix(in srgb, var(--studio-accent) 14%, var(--studio-panel))); }
+.builder-page-row__open { display: grid; min-width: 0; gap: 2px; padding: 8px 0; border: 0; background: transparent; color: var(--studio-text); text-align: left; cursor: pointer; }
+.builder-page-row__open strong,.builder-page-row__open small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.builder-page-row__open strong { font-size: 15px; }.builder-page-row__open small { color: var(--studio-accent); font-size: 12px; }.builder-page-row__open span { color: var(--studio-muted); font-size: 12px; }
+/* Copy link and the Published/Draft status share one fixed size — the status
+ * button's two-line label used to make it taller than the single-line Copy
+ * link button next to it. */
+.builder-page-row__action { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; width: 128px; height: 44px; box-sizing: border-box; padding: 6px 10px; border: 1px solid var(--studio-line); border-radius: 9px; background: transparent; color: var(--studio-text); font: inherit; text-align: left; cursor: pointer; }
+.builder-page-row__status span { font-size: 12px; font-weight: 750; }.builder-page-row__status small { color: var(--studio-muted); font-size: 10px; }.builder-page-row__status--live { border-color: color-mix(in srgb, #5cd6a8 65%, var(--studio-line)); background: color-mix(in srgb, #5cd6a8 12%, transparent); }.builder-page-row__status--live span { color: color-mix(in srgb, #5cd6a8 75%, var(--studio-text)); }
+.builder-page-row__controls { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+.builder-page-row__copy,.builder-page-row__edit { padding: .5rem .7rem; border: 1px solid var(--studio-line); border-radius: 9px; background: transparent; color: var(--studio-text); font: inherit; font-size: 12px; font-weight: 650; cursor: pointer; }.builder-page-row__copy:hover,.builder-page-row__edit:hover { background: var(--studio-panel-raised); }.builder-page-row__edit { min-height: 36px; border-color: color-mix(in srgb, var(--studio-accent) 55%, var(--studio-line)); color: var(--studio-accent); }
+/* Save and the publish status share one shape/size so neither button's text
+ * changing length (Save/Saved, Draft/Published) ever changes the row's
+ * height — a difference there was tipping the header between one and two
+ * lines depending on which state was showing, which is what made the canvas
+ * below visibly jump every time Save flipped it to "Saved". */
+.builder-pub-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 156px; height: 38px; padding: 0 14px; border: 0; border-radius: 10px; font: inherit; font-size: 13px; font-weight: 650; white-space: nowrap; cursor: pointer; }
+.builder-status--live { background: #5cd6a8; color: #08130d; }.builder-status--draft { background: var(--studio-panel-raised); color: var(--studio-muted); }.builder-status--pending { background: var(--studio-accent); color: var(--studio-accent-ink); }
+.builder-save-btn { background: linear-gradient(135deg,#ffe7bf,var(--studio-accent)); color: var(--studio-accent-ink); }
+.builder-save-btn[disabled] { opacity: .55; cursor: default; background: var(--studio-panel-raised); color: var(--studio-muted); }
+.builder-page-row__actions { position: relative; }.builder-page-row__actions summary { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 7px; color: var(--studio-muted); cursor: pointer; list-style: none; }.builder-page-row__actions summary::-webkit-details-marker { display: none; }.builder-page-row__actions[open] summary { background: var(--studio-panel-raised); }
+.builder-page-row__actions>div { position: absolute; z-index: 10; top: 34px; right: 0; display: grid; min-width: 130px; padding: 5px; border: 1px solid var(--studio-line); border-radius: 10px; background: var(--studio-panel); box-shadow: 0 14px 32px rgba(0,0,0,.24); }.builder-page-row__actions button { padding: .6rem .7rem; border: 0; border-radius: 7px; background: transparent; color: var(--studio-danger); font: inherit; font-size: 13px; text-align: left; cursor: pointer; }.builder-page-row__actions button:hover { background: var(--studio-panel-raised); }
+.builder-empty { grid-column: 1 / -1; padding: 42px 24px; border: 1px dashed var(--studio-line); border-radius: 14px; color: var(--studio-muted); text-align: center; }.builder-empty strong { color: var(--studio-text); }.builder-empty p { margin: 6px 0 16px; }
+.builder-directory__back { display: inline-block; margin-top: 24px; color: var(--studio-muted); font-size: 13px; text-decoration: none; }
+.builder-editor-bar { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-bottom: 1px solid var(--studio-line); background: var(--studio-panel); color: var(--studio-text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; flex-wrap: wrap; }
+.builder-editor-bar__title { display: grid; min-width: 130px; line-height: 1.1; }.builder-editor-bar__title small { color: var(--studio-muted); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }.builder-editor-bar__title strong { font-size: 14px; }
+
+/* Puck's live preview canvas is a genuinely separate iframe document (see
+ * node_modules/@measured/puck/dist/index.js — a real <iframe
+ * class="_PuckPreview-frame..."> when iframe mode is on, which it is here),
+ * and it syncs this outer document's <body class="builder-body"> straight
+ * onto the iframe's own <body> for visual parity with the Studio chrome —
+ * including data-theme, since the real site's own theme-init script also
+ * runs inside that iframe and reads the same localStorage key the Studio's
+ * OWN appearance toggle uses.
+ *
+ * On a real published page (any Interior/Bare/Site layout), the light theme
+ * works precisely because the real <body> carries the "v2" class, and
+ * site.css's `:root[data-theme="light"] body.v2 { --text: …; --muted: …;
+ * --bg: …; … }` overrides the exact tokens global.css's block classes read.
+ * This canvas iframe never gets that: it's Puck's own bare render of the
+ * block config, not a real Interior/Bare/Site page, so its body is only ever
+ * "builder-body" — no "v2", and this page never imports site.css in the
+ * first place (builder.astro only pulls in global.css, tap.css and this
+ * file). So in light mode, --text/--muted/--bg simply keep global.css's
+ * :root DARK defaults (there's no light override to find), and Puck's own
+ * canvas frame paints itself light regardless — near-white text on a light
+ * canvas, correctly typed, silently unreadable. That old bug is what an
+ * earlier fix here band-aided by forcing the canvas to stay dark always,
+ * with the comment reasoning that the site "has no working light theme for
+ * ordinary content" — true of global.css alone, but false in practice: it's
+ * exactly what body.v2 supplies on every real page. So mirror those same
+ * tokens (the values site.css's own light override uses) directly here,
+ * scoped to this iframe's body, instead of refusing to follow the toggle.
+ *
+ * This same rule also matches body.builder-body in THIS outer document, but
+ * .builder-app (a full-height child of body) already paints its own
+ * background over the entirety of it, so nothing here is ever visible
+ * outside the iframe.
+ *
+ * An earlier version of this fix used Puck's `overrides.preview` to wrap the
+ * canvas in an extra div instead, which looked identical in principle but
+ * broke Puck's own frame-size measurement (it measures a specific element via
+ * a ref, and the extra wrapper displaced it) and silently stopped the canvas
+ * from rendering any page content at all. Plain CSS against Puck's own
+ * element has no such risk.
+ *
+ * Dark background: same base gradient as global.css's real `body` rule (the
+ * decorative pointer-tracked highlights are dropped; --pointer-x/-y fall
+ * back to their :root defaults so this still matches closely without live
+ * mouse tracking). */
+body.builder-body {
+	background:
+		radial-gradient(circle at 18% 16%, rgba(132, 185, 255, 0.11), transparent 18%),
+		radial-gradient(circle at 80% 22%, rgba(238, 199, 183, 0.08), transparent 20%),
+		linear-gradient(180deg, #050608 0%, #090d14 40%, #050608 100%);
+	color: var(--text);
+}
+
+:root[data-theme="light"] body.builder-body {
+	--bg: #f7f2ea;
+	--bg-soft: #f0e9de;
+	--panel: #fffdf9;
+	--panel-strong: #f0e9de;
+	--text: #17202b;
+	--muted: rgba(23, 32, 43, 0.68);
+	--line: rgba(23, 32, 43, 0.16);
+	--gold: #7b5d2b;
+	--gold-soft: rgba(123, 93, 43, 0.22);
+	--gold-strong: #5e461f;
+	--shadow: 0 24px 60px rgba(42, 32, 19, 0.12);
+	background: var(--bg);
+}
+
+/* Puck uses a token palette. Re-map its neutral controls in light mode so the
+ * editor chrome, inputs, and side panels do not remain dark or washed out. */
+:root[data-theme="light"] .builder-body {
+	--puck-color-grey-01: #17202b;
+	--puck-color-grey-02: #273241;
+	--puck-color-grey-03: #45515f;
+	--puck-color-grey-04: #5f6875;
+	--puck-color-grey-05: #78808b;
+	--puck-color-grey-06: #9299a1;
+	--puck-color-grey-07: #aeb3b8;
+	--puck-color-grey-08: #c9cccf;
+	--puck-color-grey-09: #dededc;
+	--puck-color-grey-10: #ece9e4;
+	--puck-color-grey-11: #f5f0e8;
+	--puck-color-grey-12: #fffdf9;
+	--puck-color-white: #fffdf9;
+	--puck-color-black: #17202b;
+	--puck-color-azure-04: #6b4c16;
+	--puck-color-azure-05: #8a6425;
+	--puck-color-azure-09: #ead9b7;
+	--puck-color-azure-10: #f4ead5;
+	--puck-color-azure-11: #faf4e8;
+	--puck-color-azure-12: #fffaf1;
+}
+
+@media (max-width: 620px) {
+	.builder-directory__header { flex-direction: column; padding: 22px 18px; }.builder-directory__header-actions { flex-wrap: wrap; }.builder-directory__main { width: calc(100% - 36px); }.builder-directory__tools { align-items: stretch; flex-direction: column; }.builder-filters { width: fit-content; }.builder-page-row { grid-template-columns: 104px minmax(0, 1fr); gap: 10px; }.builder-page-row__preview { width: 104px; height: 66px; }.builder-page-row__open span { display: none; }.builder-page-row__controls { grid-column: 1 / -1; justify-content: flex-start; padding-left: 114px; }.builder-page-row__action { width: fit-content; height: auto; flex-direction: row; align-items: center; }.builder-page-row__status { padding: 4px 8px; border-radius: 999px; }.builder-page-row__status small { display: none; }.builder-editor-bar__title { order: -1; width: calc(100% - 56px); }
+	.menu-editor__group-row { flex-wrap: wrap; }.menu-editor__main-input { box-sizing: border-box; flex: 1 1 100%!important; width: 100%; }.menu-editor__item { grid-template-columns: 1fr auto!important; }.menu-editor__item>input { min-width: 0; }.menu-editor__blurb { grid-column: 1 / -1!important; }
+	.builder-appearance__trigger span { display: none; }
+	.builder-appearance__trigger { padding: .48rem .6rem; }
+}
+
+@media (min-width: 621px) and (max-width: 900px) { .builder-page-row { grid-template-columns: 142px minmax(0, 1fr); }.builder-page-row__preview { width: 142px; height: 80px; }.builder-page-row__controls { grid-column: 1 / -1; justify-content: flex-end; } }
+
+/* The directory has one row shape regardless of the page's editing system. */
+.builder-view-tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--studio-line); padding-bottom: 12px; flex-wrap: wrap; }
+.builder-view-tabs button { border: 0; border-radius: 9px; padding: 11px 16px; background: transparent; color: var(--studio-muted); font: inherit; cursor: pointer; }
+.builder-view-tabs button[aria-current="page"] { background: var(--studio-panel-raised); color: var(--studio-text); font-weight: 700; }
+.builder-directory [hidden] { display: none !important; }
+.builder-directory__hint { color: var(--studio-muted); font-size: 12px; margin: 12px 0 20px; }
+.builder-page-row { grid-template-columns: 168px minmax(180px, 1fr); cursor: default; align-items: start; }
+.builder-page-row__preview { padding: 0; cursor: pointer; height: auto; aspect-ratio: 16 / 9; }
+.builder-page-row__preview img { display: block; object-position: top; }
+.builder-page-row__controls { grid-column: 2; justify-content: flex-start; flex-wrap: wrap; padding: 0; }
+.builder-page-row__info { min-width: 0; }
+.builder-page-row__open { width: 100%; padding: 0; }
+.builder-page-row__help { font-size: 13px; color: var(--studio-muted); margin: 7px 0; }
+.builder-page-row__placement { color: var(--studio-muted); font-size: 11px; }
+.builder-page-row__preview > .builder-page-row__placeholder { display: flex; flex-direction: column; gap: 5px; justify-content: center; align-items: center; height: 100%; min-height: 92px; font-size: 28px; }
+.builder-page-row__placeholder small { font: 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.builder-unlinked { max-width: 900px; margin: 0 auto; padding: 20px 16px; border-top: 1px solid var(--studio-line); }
+.builder-unlinked p, .builder-unlinked li > span { color: var(--studio-muted); font-size: 13px; }
+.builder-unlinked ul { list-style: none; padding: 0; }
+.builder-unlinked li { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 12px 0; border-bottom: 1px solid var(--studio-line); }
+.builder-unlinked li .builder-button { margin-left: auto; }
+.builder-shared__links, .builder-shared__fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.builder-shared__links { margin: 20px 0 28px; }
+.builder-shared__links a, .builder-shared__fields section, .builder-shared__review { padding: 20px; border: 1px solid var(--studio-line); background: var(--studio-panel); border-radius: 12px; }
+.builder-shared__links a { display: grid; gap: 8px; color: var(--studio-text); text-decoration: none; }
+.builder-shared__links span, .builder-shared small, .builder-shared__actions p { color: var(--studio-muted); font-size: 13px; }
+.builder-shared__fields { padding: 0; border: 0; margin: 0; }
+.builder-shared h3 { margin: 0 0 18px; }
+.builder-shared label { display: grid; gap: 7px; margin: 14px 0; font-size: 14px; }
+.builder-shared input { box-sizing: border-box; width: 100%; min-width: 0; padding: 10px; border: 1px solid var(--studio-line); border-radius: 7px; background: var(--studio-panel-raised); color: var(--studio-text); font: inherit; }
+.builder-shared__actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 18px 0; }
+.builder-shared__review { margin-top: 20px; }
+.builder-shared__review > div { border-bottom: 1px solid var(--studio-line); padding: 12px 0; overflow-wrap: anywhere; }
+.builder-directory button:disabled { opacity: .55; cursor: default; }
+.builder-directory button:focus-visible, .builder-directory a:focus-visible { outline: 2px solid var(--studio-accent); outline-offset: 3px; }
+@media (max-width: 620px) {
+ .builder-page-row { grid-template-columns: 104px minmax(0, 1fr); }
+ .builder-page-row__preview { width: 104px; }
+ .builder-page-row__controls { grid-column: 1 / -1; padding: 0; }
+ .builder-page-row__help { font-size: 12px; }
+ .builder-page-row__preview > .builder-page-row__placeholder { min-height: 58px; }
+ .builder-page-row__placeholder small { font-size: 9px; }
+ .builder-view-tabs button { padding: 10px; font-size: 13px; }
+}
+@media (min-width: 1100px) {
+ .builder-page-row { grid-template-columns: 168px minmax(180px, 1fr) auto; align-items: center; }
+ .builder-page-row__controls { grid-column: 3; flex-wrap: nowrap; }
+}
+
+.builder-page-row__parent { display: block; margin-top: 4px; color: var(--studio-muted); font-size: 11px; }

@@ -1,0 +1,443 @@
+/* ---------------------------------------------------------------------------
+   Tap pages — one screen, one thumb.
+
+   A tap page is a link you text out, print on a card, or put behind a QR code:
+   a heading and a short stack of full-width buttons, sized so the last one is
+   still above the fold on the smallest phone anyone still carries.
+
+   Loaded by Bare.astro (the published page) and by the Page Builder, so what
+   staff drag around in the editor is what a visitor sees.
+
+   The tokens are redeclared on .tap rather than inherited from body.v2, because
+   the builder's canvas is not the site's <body> — a tap block dragged into the
+   editor has to bring its own colour and type with it.
+--------------------------------------------------------------------------- */
+
+.tap {
+	--ink: #06070a;
+	--ink-raised: #10141c;
+	--ivory: #f7f2ea;
+	--muted: rgba(247, 242, 234, 0.66);
+	--faint: rgba(247, 242, 234, 0.42);
+	--gold: #f2d2a2;
+	--gold-ink: #1c1305;
+	--line: rgba(247, 242, 234, 0.14);
+	--display: "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+	--body: "Atkinson", system-ui, -apple-system, sans-serif;
+	--gutter: 1.35rem;
+
+	background: var(--ink);
+	color: var(--ivory);
+	font-family: var(--body);
+	font-size: 17px;
+	line-height: 1.55;
+	-webkit-font-smoothing: antialiased;
+
+	position: relative;
+	/* The dynamic viewport unit so iOS Safari's shrinking address bar can't
+	   push the last button off the screen. */
+	min-height: 100dvh;
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+}
+
+/* Atmosphere sits behind the answers, never in front of them: the still is
+   held far back and the ink is painted over it so every label stays crisp. */
+.tap__glow {
+	position: absolute;
+	inset: 0;
+	background:
+		linear-gradient(180deg, rgba(6, 7, 10, 0.72) 0%, rgba(6, 7, 10, 0.92) 46%, var(--ink) 88%),
+		radial-gradient(110% 55% at 50% 0%, rgba(242, 210, 162, 0.18), transparent 60%);
+	pointer-events: none;
+}
+
+/* Discreet top-left link back to the main site. Kept clear of the header at
+   the smallest phone width by sitting above the flow, inset from the edge. */
+.tap__home {
+	position: absolute;
+	top: 0.9rem;
+	left: 0.9rem;
+	z-index: 2;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	min-height: 44px;
+	padding: 0.4rem 0.6rem;
+	border-radius: 999px;
+	color: var(--faint);
+	text-decoration: none;
+	font-size: 0.78rem;
+	letter-spacing: 0.02em;
+}
+
+@media (hover: hover) {
+	.tap__home:hover {
+		color: var(--gold);
+	}
+}
+
+.tap__socials {
+	display: flex;
+	justify-content: center;
+	gap: 0.6rem;
+}
+
+.tap__social {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border-radius: 999px;
+	border: 1px solid var(--line);
+	color: var(--gold);
+	text-decoration: none;
+	transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+@media (hover: hover) {
+	.tap__social:hover {
+		border-color: var(--gold);
+		background: var(--ink-raised);
+	}
+}
+
+.tap__inner {
+	position: relative;
+	width: 100%;
+	max-width: 30rem;
+	margin: 0 auto;
+	padding: 2.6rem var(--gutter) 2.2rem;
+	display: grid;
+	gap: 1.9rem;
+}
+
+.tap__head {
+	display: grid;
+	gap: 0.55rem;
+	text-align: center;
+}
+
+.tap__brand {
+	font-size: 0.78rem;
+	letter-spacing: 0.22em;
+	text-transform: uppercase;
+	color: var(--gold);
+	text-decoration: none;
+}
+
+/* A short tap-page heading (two or three words) reads best as one line, but a
+   longer sentence-length heading needs to wrap gracefully rather than
+   overflow or shrink to nothing — `balance` keeps either case tidy. */
+.tap__title {
+	width: 100%;
+	margin: 0;
+	font-family: var(--display);
+	font-weight: 600;
+	font-size: clamp(1.6rem, 8vw, 2.8rem);
+	letter-spacing: -0.02em;
+	line-height: 1.14;
+	text-wrap: balance;
+}
+
+.tap__lede {
+	margin: 0;
+	color: var(--muted);
+	font-size: 1rem;
+}
+
+/* A quiet scripture pull quote, sitting between the lede and the buttons.
+   Understated: serif, gold-tinted ivory, no border or background — it should
+   read as a breath, not another headline. */
+.tap__quote {
+	margin: 0.35rem 0 0;
+	padding: 0;
+	border: none;
+}
+
+.tap__quote p {
+	margin: 0;
+	font-family: var(--display);
+	font-style: italic;
+	font-weight: 400;
+	font-size: clamp(0.98rem, 4.2vw, 1.1rem);
+	line-height: 1.45;
+	color: var(--gold);
+	opacity: 0.92;
+}
+
+.tap__quote cite {
+	display: block;
+	margin-top: 0.3rem;
+	font-family: var(--body);
+	font-style: normal;
+	font-size: 0.76rem;
+	letter-spacing: 0.04em;
+	color: var(--faint);
+}
+
+.tap *,
+.tap *::before,
+.tap *::after {
+	box-sizing: border-box;
+}
+
+.tap__stack {
+	display: grid;
+	gap: 0.9rem;
+}
+
+/* Full-width and thumb-sized. The whole card is the tap target — nothing here
+   asks for a precise finger. */
+.tapbtn {
+	position: relative;
+	display: grid;
+	gap: 0.28rem;
+	min-height: 5.6rem;
+	align-content: center;
+	padding: 1.15rem 3rem 1.15rem 1.35rem;
+	border: 1px solid var(--line);
+	border-radius: 18px;
+	background: var(--ink-raised);
+	text-decoration: none;
+	transition: border-color 0.18s ease, background 0.18s ease, transform 0.12s ease;
+}
+
+.tapbtn:active {
+	transform: scale(0.985);
+}
+
+/* Every button is the same dark card; gold is the hover (and the tap-down on
+   phones, which have no hover). No pre-highlighted button. */
+@media (hover: hover) {
+	.tapbtn:hover {
+		border-color: var(--gold);
+		background: var(--gold);
+	}
+	.tapbtn:hover .tapbtn__label,
+	.tapbtn:hover .tapbtn__arrow {
+		color: var(--gold-ink);
+	}
+	.tapbtn:hover .tapbtn__blurb {
+		color: rgba(28, 19, 5, 0.72);
+	}
+}
+
+.tapbtn:active {
+	border-color: var(--gold);
+	background: var(--gold);
+}
+.tapbtn:active .tapbtn__label,
+.tapbtn:active .tapbtn__arrow {
+	color: var(--gold-ink);
+}
+
+/* One button per page can be marked "featured" — the step we most want taken. */
+.tapbtn--feature {
+	background: var(--gold);
+	border-color: var(--gold);
+}
+
+.tapbtn--feature .tapbtn__label,
+.tapbtn--feature .tapbtn__arrow {
+	color: var(--gold-ink);
+}
+
+.tapbtn--feature .tapbtn__blurb {
+	color: rgba(28, 19, 5, 0.72);
+}
+
+@media (hover: hover) {
+	.tapbtn--feature:hover {
+		background: #f7dcb4;
+		border-color: #f7dcb4;
+	}
+}
+
+.tapbtn__label {
+	font-family: var(--display);
+	font-weight: 600;
+	font-size: 1.32rem;
+	letter-spacing: -0.01em;
+	line-height: 1.15;
+}
+
+.tapbtn__blurb {
+	color: var(--muted);
+	font-size: 0.92rem;
+	line-height: 1.4;
+}
+
+.tapbtn__arrow {
+	position: absolute;
+	right: 1.25rem;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 1.15rem;
+	color: var(--faint);
+}
+
+/* A button with no link yet. Staff see it in the builder; nobody can tap it
+   into a dead end on the live site, because the page won't publish it. */
+.tapbtn--empty {
+	opacity: 0.55;
+	border-style: dashed;
+}
+
+.tap__foot {
+	text-align: center;
+}
+
+.tap__foot a {
+	color: var(--faint);
+	font-size: 0.9rem;
+	text-decoration: none;
+	border-bottom: 1px solid var(--line);
+	padding-bottom: 0.15rem;
+}
+
+@media (min-width: 700px) {
+	.tap__inner {
+		padding-top: 3.4rem;
+		padding-bottom: 3rem;
+	}
+}
+
+/* A button that opens its target inline (e.g. Give on /links) instead of
+   navigating away. The panel sits directly under the button it belongs to
+   and is hidden until the script expands it. */
+.tapbtn-embed-wrap {
+	display: grid;
+	gap: 0.6rem;
+}
+
+.tapbtn-embed-panel {
+	display: grid;
+	grid-template-rows: auto 1fr;
+	border: 1px solid var(--line);
+	border-radius: 18px;
+	overflow: hidden;
+	background: var(--ink-raised);
+	height: var(--tapbtn-embed-panel-height, min(80vh, 700px));
+	/* Height changes smoothly instead of jumping the layout — e.g. when a
+	   controlled frame posts a taller measurement after "Add something else"
+	   expands, or after its own thank-you screen appears. */
+	transition: height 0.28s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.tapbtn-embed-panel {
+		transition: none;
+	}
+}
+
+/* Set once a frame we control (our own ?embed=1 pages, or a third-party
+   frame that adopts the same postMessage contract) reports its real document
+   height — see the "nlgr-embed-height" listener in MountedPage.astro. The
+   panel is now sized exactly to the frame's content, so the frame itself
+   never needs its own scrollbar: the outer page is the only scroll surface. */
+.tapbtn-embed-panel--auto .tapbtn-embed-panel__frame {
+	overflow: visible;
+}
+
+/* The posted height is the FRAME's content height. Apply it to the frame row,
+   not the whole panel: the close bar above it shares the grid, so sizing the
+   panel to the posted value clipped the bottom ~57px of every auto-height
+   frame. */
+.tapbtn-embed-panel.tapbtn-embed-panel--auto {
+	height: auto;
+	grid-template-rows: auto auto;
+	transition: none;
+}
+
+.tapbtn-embed-panel--auto .tapbtn-embed-panel__frame {
+	height: var(--tapbtn-embed-panel-height);
+	transition: height 0.28s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.tapbtn-embed-panel--auto .tapbtn-embed-panel__frame {
+		transition: none;
+	}
+}
+
+.tapbtn-embed-panel__bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.6rem;
+	padding: 0.7rem 0.9rem;
+	border-bottom: 1px solid var(--line);
+	font-size: 0.85rem;
+	letter-spacing: 0.02em;
+	color: var(--muted);
+}
+
+.tapbtn-embed-panel__close {
+	appearance: none;
+	border: 1px solid var(--line);
+	background: transparent;
+	color: var(--ivory);
+	width: 32px;
+	height: 32px;
+	min-height: 0;
+	border-radius: 999px;
+	font-size: 0.95rem;
+	line-height: 1;
+	cursor: pointer;
+}
+
+@media (hover: hover) {
+	.tapbtn-embed-panel__close:hover {
+		border-color: var(--gold);
+		color: var(--gold);
+	}
+}
+
+.tapbtn-embed-panel__frame {
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	-webkit-overflow-scrolling: touch;
+	/* For a frame we don't control (SecureGive) that still needs its own
+	   scroll at a fixed height: let touch scrolling hand off to the page
+	   smoothly at the frame's top/bottom edge instead of trapping it there. */
+	overscroll-behavior: auto;
+}
+
+/* Preview panels don't hold an iframe — they're a short description plus a
+   button that opens the destination in a new tab, so the panel only needs to
+   be as tall as its content. */
+.tapbtn-embed-panel--preview {
+	height: auto;
+}
+
+.tapbtn-embed-panel__preview {
+	display: grid;
+	gap: 1rem;
+	padding: 1.1rem 1rem 1.4rem;
+	justify-items: start;
+}
+
+.tapbtn-embed-panel__preview-text {
+	color: var(--ivory);
+	line-height: 1.5;
+	margin: 0;
+}
+
+.tapbtn-embed-panel__preview-action {
+	justify-self: stretch;
+	text-align: center;
+}
+
+/* The Give panel is revealed by script; its display:grid must not override [hidden]. */
+.tapbtn-embed-panel[hidden] {
+	display: none;
+}
+
+/* Leave room under the top-left home link so it never crowds the kicker. */
+.tap:has(.tap__home) {
+	padding-top: 3.25rem;
+}

@@ -1,0 +1,37 @@
+---
+import { isPagePublished } from "../lib/studio/page-visibility";
+import { runtimeSite } from "../data/site";
+
+interface Props {
+	site?: Awaited<ReturnType<typeof runtimeSite>>["site"];
+}
+
+const site = Astro.props.site ?? (await runtimeSite(Astro.locals)).site;
+const year = new Date().getFullYear();
+// Footer links only show when the page is published (Studio can set pages to Draft).
+const footerLinks = (await Promise.all([
+	["/", "Home"], ["/about", "About"], ["/p/welcome", "Welcome"],
+].map(async ([href, label]) => ({ href, label, published: await isPagePublished(href, Astro.locals) })))).filter((link) => link.published);
+const LABELS: Record<string, string> = { youtube: "YouTube", facebook: "Facebook", instagram: "Instagram", tiktok: "TikTok", linkedin: "LinkedIn" };
+const socials = Object.entries(site.social).filter(([, href]) => href);
+---
+
+<footer class="foot">
+	<div class="shell foot__grid">
+		<div>
+			<p class="foot__brand">{site.name}</p>
+			{site.location && <p>{site.location}</p>}
+			{site.email && <p style="margin-top:.6rem"><a href={`mailto:${site.email}`}>{site.email}</a></p>}
+			{site.phone && <p>{site.phone}</p>}
+		</div>
+		<nav aria-label="Footer">
+			{footerLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+		</nav>
+		<div>
+			{socials.map(([name, href]) => <a href={href} target="_blank" rel="noopener">{LABELS[name] ?? name.charAt(0).toUpperCase() + name.slice(1)}</a>)}
+		</div>
+	</div>
+	<div class="shell" style="margin-top:2.4rem">
+		<p>© {year} {site.name}</p>
+	</div>
+</footer>

@@ -1,0 +1,149 @@
+---
+// The layout the older content pages still use. It now wears the same chrome
+// and footer as the other pages, so the header and footer match wherever a
+// visitor lands.
+//
+// Embed mode: any page using this layout can be requested with `?embed=1`
+// (e.g. for a TapButtons inline panel — see blocks.tsx / MountedPage.astro).
+// That renders the SAME page content with no header, nav, footer or Studio
+// dock, and a transparent background sized to sit inside a dark panel at
+// about 330px wide. Without `?embed=1` a page is completely unchanged. This
+// lives here (rather than a per-page *Embed.astro copy) so
+// any page on Interior gets embed support for free.
+import BaseHead from "../components/BaseHead.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import { pageOgImage } from "../lib/studio/pages";
+import StudioDock from "../components/StudioDock.astro";
+import { runtimeSite } from "../data/site";
+import SiteFooter from "../components/SiteFooter.astro";
+import "../styles/site.css";
+import "../styles/tap.css";
+
+interface Props {
+	title: string;
+	description: string;
+	image?: string;
+	kicker?: string;
+	heading?: string;
+	lede?: string;
+}
+
+const { title, description, image, kicker, heading, lede } = Astro.props;
+const isEmbed = Astro.url.searchParams.get("embed") === "1";
+const { site } = await runtimeSite(Astro.locals);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} image={image ?? pageOgImage(Astro.url.pathname)} />
+		<link rel="preload" href="/fonts/fraunces-600.woff2" as="font" type="font/woff2" crossorigin />
+		{isEmbed && (
+			<style>
+				/* Readable down to about 330px wide, and transparent so the
+				   frame matches whatever dark panel it sits inside instead of
+				   showing its own backdrop. overflow: hidden means this
+				   document never grows its own scrollbar — the parent page
+				   (MountedPage.astro) resizes the iframe to fit, so the outer
+				   page stays the only scroll surface.
+
+				   Specificity note: site.css sets `body.v2 { background:
+				   var(--ink) }` (a class selector). A plain `html, body`
+				   rule here is an element selector — lower specificity — so
+				   it silently lost that fight and the page's own opaque
+				   background showed through the panel instead of the
+				   transparent one this comment promised. Matching on
+				   `body.v2--embed` (the class Interior already adds below)
+				   wins on specificity without needing !important. */
+				html { background: transparent !important; overflow: hidden; }
+				body.v2--embed {
+					/* !important, not just a class selector: site.css's
+					   `body.v2 { background: var(--ink) }` carries the same
+					   specificity (one class selector) and can still win on
+					   source order depending on how Astro orders the
+					   imported stylesheet vs. this inline block, so equal
+					   specificity isn't a reliable win here. */
+					background: transparent !important;
+					overflow: hidden;
+				}
+				body::before, body::after { display: none; }
+				.pagehead { padding-top: 0.4rem; }
+				.landing-shell { padding-top: 0; }
+				.section { padding: 1.1rem 0.4rem; }
+				.container { padding: 0; }
+
+				/* Viewport-height feedback loop: an auto-height iframe sets
+				   its own CSS height to match the document height this page
+				   reports (see the postEmbedHeight script below and
+				   MountedPage.astro's "nlgr-embed-height" listener). Any
+				   element sized with 100vh/100svh/100dvh inside that same
+				   document resolves against the iframe's OWN rendered
+				   height — which we just set from that element's size. Grow
+				   the content, and the iframe grows, which grows the
+				   viewport unit, which grows the content again, spiraling
+				   until it hits panel-height.ts's MAX_EMBED_HEIGHT safety
+				   clamp (confirmed: /spiritual-formation's three
+				   `.growth-chapter` sections at 185svh each inflated to
+				   ~32,900px apiece — a ~103,800px document — before being
+				   clamped to the 20,000px ceiling). No embedded page is
+				   ever really "full height" content, so viewport-relative
+				   sizing is neutralized here for every page rendered
+				   through this layout in embed mode, not left for each
+				   page author to remember. */
+				body.v2--embed :is(section, div, article, main, header, footer) {
+					height: auto !important;
+					min-height: 0 !important;
+					max-height: none !important;
+					position: static !important;
+					top: auto !important;
+				}
+			</style>
+		)}
+		{isEmbed && (
+			<script>
+				// Tells the parent page how tall this embedded document
+				// actually is, so it can size the iframe with no scrollbar of
+				// its own — the outer page stays the only scroll surface (see
+				// the "nlgr-embed-height" listener in MountedPage.astro).
+				(function postEmbedHeight() {
+					let lastHeight = 0;
+					function post() {
+						const height = Math.ceil(document.documentElement.getBoundingClientRect().height);
+						if (!height || Math.abs(height - lastHeight) < 2) return;
+						lastHeight = height;
+						window.parent.postMessage({ type: "nlgr-embed-height", height }, "*");
+					}
+					if (typeof ResizeObserver !== "undefined") {
+						new ResizeObserver(() => post()).observe(document.documentElement);
+					}
+					window.addEventListener("load", post);
+					document.addEventListener("nlgr:embed-height-refresh", post);
+					if (document.fonts?.ready) document.fonts.ready.then(post).catch(() => {});
+					post();
+					setTimeout(post, 300);
+				})();
+			</script>
+		)}
+	</head>
+	<body class:list={["v2", { "v2--embed": isEmbed }]}>
+		{!isEmbed && <SiteHeader site={site} />}
+
+		<main class="landing-shell">
+			{(kicker || heading || lede) && (
+				<section class="pagehead">
+					<div class="shell">
+						{kicker && <p class="band__label">{kicker}</p>}
+						{heading && <h1>{heading}</h1>}
+						{lede && <p>{lede}</p>}
+					</div>
+				</section>
+			)}
+
+			<slot />
+		</main>
+
+		{!isEmbed && <SiteFooter site={site} />}
+
+		{!isEmbed && <StudioDock />}
+	</body>
+</html>

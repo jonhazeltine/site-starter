@@ -1,0 +1,85 @@
+---
+import { readNav } from "../lib/studio/nav";
+import { runtimeSite } from "../data/site";
+import ThemeControl from "./ThemeControl.astro";
+import { isPagePublished } from "../lib/studio/page-visibility";
+
+interface Props {
+	/** Where the wordmark points. */
+	brandHref?: string;
+	site?: Awaited<ReturnType<typeof runtimeSite>>["site"];
+}
+
+const { brandHref = "/", site: suppliedSite } = Astro.props;
+
+// The menus are content (content/nav.json), editable in the Page Builder.
+const nav = await readNav(Astro.locals);
+const hrefs = [...new Set(["/", nav.cta.href, ...nav.groups.flatMap((group) => [group.href, ...group.items.map((item) => item.href)])])];
+const visibility = new Map(await Promise.all(hrefs.map(async (href) => [href, await isPagePublished(href, Astro.locals)] as const)));
+const visibleGroups = nav.groups.map((group) => ({ ...group, rootVisible: visibility.get(group.href) !== false, items: group.items.filter((item) => visibility.get(item.href) !== false) })).filter((group) => group.rootVisible || group.items.length > 0);
+const homeVisible = visibility.get("/") !== false;
+const site = suppliedSite ?? (await runtimeSite(Astro.locals)).site;
+---
+
+<header class="chrome">
+	<div class="chrome__bar">
+		{homeVisible ? <a class="chrome__brand" href={brandHref}>{site.shortName}</a> : <span class="chrome__brand">{site.shortName}</span>}
+
+		<ThemeControl />
+
+		<button
+			class="chrome__toggle"
+			type="button"
+			aria-label="Menu"
+			aria-expanded="false"
+			aria-controls="site-nav"
+		>
+			<span class="chrome__bars" aria-hidden="true"></span>
+			<span class="chrome__toggle-label">Menu</span>
+		</button>
+	</div>
+
+	<nav class="chrome__nav" id="site-nav" aria-label="Primary" hidden>
+		<ul class="navlist">
+			{visibleGroups.map((g) => (
+				<li class="navlist__item">
+					{g.rootVisible ? <a class="navlist__link" href={g.href}>{g.label}</a> : <span class="navlist__link">{g.label}</span>}
+					{g.items.length > 0 && (
+						<ul class="navlist__sub">
+							{g.items.map((it) => (
+								<li><a href={it.href}>{it.label}</a></li>
+							))}
+						</ul>
+					)}
+				</li>
+			))}
+		</ul>
+		{visibility.get(nav.cta.href) !== false && <a class="navlist__cta" href={nav.cta.href}>{nav.cta.label}</a>}
+	</nav>
+</header>
+
+<script>
+	const chrome = document.querySelector(".chrome");
+	const toggle = document.querySelector(".chrome__toggle");
+	const nav = document.getElementById("site-nav");
+
+	const setOpen = (open: boolean) => {
+		chrome?.classList.toggle("is-open", open);
+		toggle?.setAttribute("aria-expanded", open ? "true" : "false");
+		if (nav) nav.hidden = !open;
+	};
+
+	setOpen(false);
+
+	toggle?.addEventListener("click", () => {
+		setOpen(!chrome?.classList.contains("is-open"));
+	});
+
+	nav?.querySelectorAll("a").forEach((link) => {
+		link.addEventListener("click", () => setOpen(false));
+	});
+
+	document.addEventListener("keydown", (event) => {
+		if (event.key === "Escape") setOpen(false);
+	});
+</script>

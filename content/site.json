@@ -1,0 +1,15 @@
+{
+	"site": {
+		"name": "My Site",
+		"shortName": "My Site",
+		"tagline": "A short line that says what this site is about.",
+		"email": "hello@example.com",
+		"phone": "",
+		"location": "Your City, ST"
+	},
+	"highlights": [
+		{ "n": "01", "verb": "Say the first thing people should know about you." },
+		{ "n": "02", "verb": "Say the second thing." },
+		{ "n": "03", "verb": "Say the third thing." }
+	]
+}

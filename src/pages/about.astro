@@ -1,0 +1,36 @@
+---
+import Site from "../layouts/Site.astro";
+import { runtimeSite } from "../data/site";
+
+export const prerender = false;
+
+const { site } = await runtimeSite(Astro.locals);
+
+// Replace these with links to your own pages.
+const sections = [
+	{ title: "Welcome", line: "A sample page built with the drag-and-drop Page Builder.", href: "/p/welcome" },
+	{ title: "Contact", line: "The best way to reach us.", href: site.email ? `mailto:${site.email}` : "/" },
+];
+---
+
+<Site title={`About ${site.name}`} description={`Learn more about ${site.name}.`}>
+	<section class="pagehead">
+		<div class="shell">
+			<h1>About us</h1>
+			<p>Tell visitors who you are, what you do, and why it matters. This page is plain Astro code in src/pages/about.astro.</p>
+		</div>
+	</section>
+
+	<section class="band">
+		<div class="shell">
+			<div class="vision">
+				{sections.map((s) => (
+					<a class="vision__item" href={s.href}>
+						<strong>{s.title}</strong>
+						<span>{s.line}</span>
+					</a>
+				))}
+			</div>
+		</div>
+	</section>
+</Site>

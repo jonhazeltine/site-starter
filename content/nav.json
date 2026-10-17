@@ -1,0 +1,13 @@
+{
+	"groups": [
+		{ "label": "Home", "href": "/", "items": [] },
+		{
+			"label": "About",
+			"href": "/about",
+			"items": [
+				{ "label": "Welcome", "href": "/p/welcome", "blurb": "A sample page made with the Page Builder." }
+			]
+		}
+	],
+	"cta": { "label": "Get in touch", "href": "mailto:hello@example.com" }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "site-starter",
+  "description": "An Astro website starter with a drag-and-drop Page Builder and an AI editing Studio.",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.120.0",
+    "@astrojs/mdx": "4.3.12",
+    "@astrojs/react": "^6.0.1",
+    "@astrojs/vercel": "^8.2.11",
+    "@measured/puck": "^0.20.2",
+    "@vercel/blob": "^2.8.0",
+    "astro": "5.16.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "5.9.3"
+  },
+  "private": true,
+  "scripts": {
+    "astro": "astro",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro build && tsc --noEmit",
+    "test": "tsx --test test/*.test.ts domain-redirects.test.mjs"
+  },
+  "type": "module",
+  "devDependencies": {
+    "tsx": "4.23.13"
+  }
+}
